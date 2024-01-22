@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Assignment</title>
+    <style>
+      body {
+        margin: 0;
+        overflow-y: hidden; /* Hide vertical scrollbar */
+        overflow-x: hidden; /* Hide horizontal scrollbar */
+      }
+      .toggles {
+        margin: 10px;
+        position: absolute;
+        z-index: 9999;
+      }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+          "three/nodes": "https://unpkg.com/three@0.160.0/examples/jsm/nodes/Nodes.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+
+    <div class="toggles">
+      <button id="show-helper">Show Light Helper</button>
+      <button id="hide-helper">Hide Light Helper</button>
+    </div>
+    
+    <script type="module" src="main.js"></script>
+
+  </body>
+</html>
