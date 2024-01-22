@@ -33,7 +33,7 @@ controls.maxZoom = 20;
 // Load 3d models
 const loader = new GLTFLoader();
 loader.load(
-  "./data/not_oudekerk_001.glb",
+  "data/not_oudekerk_001.glb",
   function (gltf) {
     gltf.scene.traverse(function (node) {
       if (node.isMesh) {
@@ -50,7 +50,7 @@ loader.load(
 );
 
 loader.load(
-  "./data/oudekerk_003.glb",
+  "data/oudekerk_003.glb",
   function (gltf) {
     gltf.scene.traverse(function (node) {
       if (node.isMesh) {
@@ -93,7 +93,7 @@ directionalLight.shadow.camera.bottom = -d;
 // Create a plane that receives shadows (but does not cast them)
 const planeGeometry = new THREE.PlaneGeometry(691, 660);
 const planeTexture = new THREE.TextureLoader().load(
-  "./data/airphoto_enschede_clip002.png"
+  "data/airphoto_enschede_clip002.png"
 );
 const planeMaterial = new THREE.MeshStandardMaterial({ map: planeTexture });
 const plane = new THREE.Mesh(planeGeometry, planeMaterial);
