@@ -4,18 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>3D Assignment</title>
-    <style>
-      body {
-        margin: 0;
-        overflow-y: hidden; /* Hide vertical scrollbar */
-        overflow-x: hidden; /* Hide horizontal scrollbar */
-      }
-      .toggles {
-        margin: 10px;
-        position: absolute;
-        z-index: 9999;
-      }
-    </style>
+    <link rel="stylesheet" href="styles.css" />
     <script type="importmap">
       {
         "imports": {
@@ -27,13 +16,44 @@
     </script>
   </head>
   <body>
-
-    <div class="toggles">
-      <button id="show-helper">Show Light Helper</button>
-      <button id="hide-helper">Hide Light Helper</button>
+    <div id="map">
+      <div class="toggles">
+        <p class="credit">
+          Developed by Rifqi Alfadhillah Sentosa using three.js for course
+          assignment. All rights reserved.
+        </p>
+        <button id="toggle-animation">Pause Animation</button>
+        <button id="show-helper">Show Light Helper</button>
+        <button id="hide-helper">Hide Light Helper</button>
+        <br />
+        <button id="all-shadows">Turn On Other Shadows</button>
+        <button id="not-all-shadows">Turn Off Other Shadows</button>
+        <br />
+        <br />
+        <input
+          id="light-azimuth"
+          type="range"
+          min="-1000"
+          max="1000"
+          step="50"
+          name="light-azimuth"
+        />
+        <label style="color: #0075ff" for="light-azimuth"
+          >Light Azimuth</label
+        >
+        <br />
+        <input
+          id="light-elevation"
+          type="range"
+          min="250"
+          max="500"
+          name="light-elevation"
+        />
+        <label style="color: #0075ff" for="light-elevation"
+          >Light Elevation</label
+        >
+      </div>
     </div>
-    
     <script type="module" src="main.js"></script>
-
   </body>
 </html>

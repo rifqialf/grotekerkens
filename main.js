@@ -12,7 +12,6 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 // Initialize scene & camera
 const scene = new THREE.Scene();
-// const camera = new THREE.PerspectiveCamera(75,window.innerWidth / window.innerHeight,0.1,1000);
 const camera = new THREE.OrthographicCamera(
   window.innerWidth / -2,
   window.innerWidth / 2,
@@ -24,16 +23,17 @@ const camera = new THREE.OrthographicCamera(
 scene.background = "white";
 camera.position.set(0, 200, 100);
 
-// Initialize orbig Controller
+// Initialize Orbit Controller
 const controls = new OrbitControls(camera, renderer.domElement);
-controls.minZoom = 5;
+controls.minZoom = 2;
 controls.maxZoom = 20;
-// controls.enablePan = false;
 
-// Load 3d models
+// Load 3d Models
 const loader = new GLTFLoader();
+
+let buildings;
 loader.load(
-  "data/not_oudekerk_001.glb",
+  "data/centrum_004.glb",
   function (gltf) {
     gltf.scene.traverse(function (node) {
       if (node.isMesh) {
@@ -41,16 +41,17 @@ loader.load(
         node.receiveShadow = true;
       }
     });
-    scene.add(gltf.scene);
+    buildings = gltf.scene;
+    scene.add(buildings);
   },
   undefined,
   function (error) {
     console.error(error);
-  }
-);
+  });
 
+let oudekerk;
 loader.load(
-  "data/oudekerk_003.glb",
+  "./data/oudekerk_003.glb",
   function (gltf) {
     gltf.scene.traverse(function (node) {
       if (node.isMesh) {
@@ -58,7 +59,43 @@ loader.load(
         node.receiveShadow = false;
       }
     });
-    scene.add(gltf.scene);
+    oudekerk = gltf.scene;
+    scene.add(oudekerk);
+  },
+  undefined,
+  function (error) {
+    console.error(error);
+  });
+
+document.getElementById("all-shadows").onclick = () => {
+  buildings.traverse(function (node) {
+    if (node.isMesh) {
+      node.castShadow = true;
+    }
+  });
+};
+
+document.getElementById("not-all-shadows").onclick = () => {
+  buildings.traverse(function (node) {
+    if (node.isMesh) {
+      node.castShadow = false;
+    }
+  });
+};
+
+
+let jacobuskerk;
+loader.load(
+  "./data/jacobuskerk_001.glb",
+  function (gltf) {
+    gltf.scene.traverse(function (node) {
+      if (node.isMesh) {
+        node.castShadow = true;
+        node.receiveShadow = false;
+      }
+    });
+    jacobuskerk = gltf.scene;
+    scene.add(jacobuskerk);
   },
   undefined,
   function (error) {
@@ -66,29 +103,24 @@ loader.load(
   }
 );
 
-// Add hemisphere directionalLight
-const hemiLight = new THREE.HemisphereLight(0xffffbb, 0x080820, 1);
-scene.add(hemiLight);
-
-// Add directional directionalLight
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-directionalLight.position.set(80, 90, 100); //default; directionalLight shining from top
-directionalLight.castShadow = true; // default false
-directionalLight.intensity = 2; // default false
-scene.add(directionalLight);
-
-//Set up shadow properties for the DirectionalLight
-directionalLight.shadow.mapSize.width = 512; // default
-directionalLight.shadow.mapSize.height = 512; // default
-directionalLight.shadow.camera.near = 2; // default
-directionalLight.shadow.camera.far = 500; // default
-
-//Set up fulcrum properties for the DirectionalLight
-const d = 30;
-directionalLight.shadow.camera.left = -d;
-directionalLight.shadow.camera.right = d;
-directionalLight.shadow.camera.top = d;
-directionalLight.shadow.camera.bottom = -d;
+let gementee;
+loader.load(
+  "./data/gementee_001.glb",
+  function (gltf) {
+    gltf.scene.traverse(function (node) {
+      if (node.isMesh) {
+        node.castShadow = true;
+        node.receiveShadow = false;
+      }
+    });
+    gementee = gltf.scene;
+    scene.add(gementee);
+  },
+  undefined,
+  function (error) {
+    console.error(error);
+  }
+);
 
 // Create a plane that receives shadows (but does not cast them)
 const planeGeometry = new THREE.PlaneGeometry(691, 660);
@@ -101,6 +133,30 @@ plane.rotation.set((Math.PI / 4) * 6, 0, 0);
 plane.receiveShadow = false;
 plane.position.set(-27, 0, 12);
 scene.add(plane);
+
+// Add hemisphere directionalLight
+const hemiLight = new THREE.HemisphereLight(0xffffbb, 0x080820, 1);
+scene.add(hemiLight);
+
+// Add directionalLight
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+directionalLight.position.set(0, 0, 0); //default; directionalLight shining from top
+directionalLight.castShadow = true; // default false
+directionalLight.intensity = 3; // default false
+scene.add(directionalLight);
+
+// Set up shadow properties for the DirectionalLight
+directionalLight.shadow.mapSize.width = 2048; // default
+directionalLight.shadow.mapSize.height = 2048; // default
+directionalLight.shadow.camera.near = 2; // default
+directionalLight.shadow.camera.far = 1000; // default
+
+// Set up fulcrum properties for the DirectionalLight
+let d = 500;
+directionalLight.shadow.camera.left = -d;
+directionalLight.shadow.camera.right = d;
+directionalLight.shadow.camera.top = d;
+directionalLight.shadow.camera.bottom = -d;
 
 const shadowPlaneGeometry = new THREE.PlaneGeometry(691, 660);
 const shadowPlaneMaterial = new THREE.MeshStandardMaterial({
@@ -115,30 +171,66 @@ shadowPlane.receiveShadow = true;
 shadowPlane.position.set(-27, 0, 12);
 scene.add(shadowPlane);
 
-// Shadow camera helper
+// Shadow Camera Helper
 const helper = new THREE.CameraHelper(directionalLight.shadow.camera);
-
-controls.addEventListener("change", () => {
-  renderer.render(scene, camera);
-});
+scene.add(helper);
 
 document.getElementById("show-helper").onclick = () => {
-	scene.add(helper);
-}
+  scene.add(helper);
+};
 
 document.getElementById("hide-helper").onclick = () => {
-	scene.remove(helper);
-}
+  scene.remove(helper);
+};
+
+let initAnim = true;
+let runAnim = true;
+let isPlay = true;
 
 let angle = 0;
+let lightAzimuth = document.getElementById("light-azimuth");
+let lightElevation = document.getElementById("light-elevation");
+let animationButton = document.getElementById("toggle-animation");
+
+animationButton.onclick = function startAnimation() {
+  if (initAnim) {
+    initAnim = false;
+    runAnim = false;
+  }
+  if (runAnim) {
+    animationButton.innerHTML = "Pause Animation";
+    runAnim = false;
+    isPlay = true;
+    animate();
+  } else {
+    animationButton.innerHTML = "Start Animation";
+    runAnim = true;
+    isPlay = false;
+    noAnimate();
+  }
+};
+
 function animate() {
+  if (isPlay === false) {
+    return;
+  }
   requestAnimationFrame(animate);
+  angle -= 0.008;
+  directionalLight.position.x = lightElevation.value * Math.sin(angle);
+  directionalLight.position.y = lightElevation.value * Math.cos(angle);
+  directionalLight.position.z = lightAzimuth.value * Math.sin(angle);
+  rendering();
+}
 
-  angle += 0.01;
-  directionalLight.position.x = 100 * Math.cos(angle);
-  directionalLight.position.y = 200 + 150 * Math.cos(angle);
-  directionalLight.position.z = 100 + 180 * Math.cos(angle);
+function noAnimate() {
+  requestAnimationFrame(noAnimate);
+  directionalLight.position.x = lightElevation.value * Math.sin(angle);
+  directionalLight.position.y = lightElevation.value * Math.cos(angle);
+  directionalLight.position.z = lightAzimuth.value * Math.sin(angle);
+  rendering();
+}
 
+function rendering() {
   controls.update();
   renderer.render(scene, camera);
 }
